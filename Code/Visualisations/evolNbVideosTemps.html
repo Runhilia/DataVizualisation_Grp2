@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+    <head>
+    <meta charset="utf-8" />
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <link rel="stylesheet" href="evolNbVideosTemps.css"/>
+    </head>
+
+    <body>
+        <div class="main">
+            <div class="container">
+                <div id="title">Evolution du nombre de vidéos visionnées au cours de l'année 2020</div>
+                <div id="visu"></div>
+            </div>
+        </div>
+
+        <script>
+
+            // Dimensions du graphique
+            const largeur = 1150;
+            const hauteur = 600;
+
+            // Crée un élément SVG
+            var svg = d3.
+                select('#visu').
+                append('svg')
+                .attr('width', largeur)
+                .attr('height', hauteur);
+
+            const marge = {haut: 20, droite: 20, bas: 40, gauche: 50};
+
+            const utilisateurs = ["Angeline", "Loric", "Mathys", "Thomas"];
+            const couleurs = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
+
+
+            // Récupère les données du fichier
+            d3.json('../Data/videoData2020.json').then(data => {
+
+                // On met les vidéos dans un tableau pour les manipuler plus facilement
+                const videos = Object.entries(data).map(([url, valeurs]) => ({
+                    url,
+                    ...valeurs,
+                    users: Object.entries(valeurs.users).map(([user, details]) => ({ // On fait pareil pour les utilisateurs à l'intérieur des vidéos
+                        user,
+                        ...details
+                    }))
+                }));
+
+                // Tri des vidéos par personne
+                const videosParPersonne = utilisateurs.map(utilisateur => {
+                    var videosUtilisateur = [];
+                    videos.forEach(video => { // On parcourt toutes les vidéos
+                        video.users.forEach(user => { // On parcourt tous les utilisateurs de chaque vidéo
+                            if (user.user === utilisateur) { // Si l'utilisateur est celui qu'on cherche
+                                videosUtilisateur.push({ // On ajoute la vidéo à la liste des vidéos
+                                    url: video.url,
+                                    dateVisionnage: user.date
+                                });
+                            }
+                        });
+                    });
+                    return videosUtilisateur;
+                });
+
+                // Tri des vidéos par mois
+                const videosParMois = videosParPersonne.map(videos => {
+                    var videosMois = [];
+                    for (let i = 0; i < 12; i++) { // On parcourt tous les mois
+                        videosMois.push(videos.filter(video => { // On filtre les vidéos du mois
+                            const mois = video.dateVisionnage.split('/')[1];
+                            return mois == i + 1;
+                        }));
+                    }
+                    return videosMois;
+                });
+
+                // Tri des vidéos par semaine
+                const videosParSemaine = videosParPersonne.map(videos => {
+                    var videosSemaine = [];
+                    for (let i = 0; i < 53; i++) { // On parcourt toutes les semaines
+                        videosSemaine.push(videos.filter(video => { // On filtre les vidéos de la semaine
+                            const jour = video.dateVisionnage.split('/')[0];
+                            const mois = video.dateVisionnage.split('/')[1];
+                            const annee = video.dateVisionnage.split('/')[2];
+                            const date = new Date(annee, mois - 1, jour);
+                            // L'année commençait par un mercredi donc on doit décaler les dates ( code à l'aide de Copilot )
+                            const debutAnnee = new Date(2020, 0, 1 - 2);
+                            const debutSemaine = new Date(debutAnnee.getTime() + i * 7 * 24 * 60 * 60 * 1000);
+                            const finSemaine = new Date(debutSemaine.getTime() + 7 * 24 * 60 * 60 * 1000);
+                            return date >= debutSemaine && date < finSemaine;
+                        }));
+                    }
+                    return videosSemaine;
+                });
+
+                // Tri des vidéos par jour
+                const videosParJour = videosParPersonne.map(videos => {
+                    var videosJour = [];
+                    for (let i = 0; i < 366; i++) { // On parcourt tous les jours
+                        videosJour.push(videos.filter(video => { // On filtre les vidéos du jour
+                            const jour = video.dateVisionnage.split('/')[0];
+                            const mois = video.dateVisionnage.split('/')[1];
+                            const annee = video.dateVisionnage.split('/')[2];
+                            const date = new Date(annee, mois - 1, jour);
+                            return date.getTime() === new Date(2020, 0, 1).getTime() + i * 24 * 60 * 60 * 1000;
+                        }));
+                    }
+                    return videosJour;
+                });
+
+                console.log(videosParSemaine);
+
+                // Echelles
+                const echelleX = d3.scaleUtc()
+                    .domain([new Date(2020, 0, 1), new Date(2020, 11, 31)]) // Toute l'année 2020
+                    .range([marge.gauche, largeur - marge.droite]);
+                
+                const echelleY = d3.scaleLinear()
+                    .domain(
+                        [d3.min(videosParSemaine.flat(), videos => videos.length), // Le nombre minimal de vidéos visionnées
+                        d3.max(videosParSemaine.flat(), videos => videos.length)]) // Le nombre maximal de vidéos visionnées
+                    .range([hauteur - marge.bas, marge.haut]);
+
+                // Axes
+                const axeX = d3.axisBottom(echelleX)
+                    .ticks(d3.timeMonth.every(1)) // Un tick par mois
+                    .tickFormat(d3.timeFormat('%d %b')); // Format de la date
+
+                const axeY = d3.axisLeft(echelleY);
+
+                // Ajout des axes
+                svg.append('g')
+                    .attr('class', 'x-axis')
+                    .attr('transform', `translate(0, ${hauteur - marge.bas})`)
+                    .call(axeX)
+                    .call(g => g.append("text")
+                    .attr("class", "axis-label")
+                    .attr("x", largeur / 2)
+                    .attr("y", marge.bas)
+                    .attr("fill", "currentColor")
+                    .attr("text-anchor", "start")
+                    .text("Année 2020"));
+
+                svg.append('g')
+                    .attr('class', 'y-axis')
+                    .attr('transform', `translate(${marge.gauche}, 0)`)
+                    .call(axeY)
+                    .call(g => g.append("text")
+                    .attr("x", 0)
+                    .attr("y", marge.haut - 5)
+                    .attr("fill", "currentColor")
+                    .attr("text-anchor", "start")
+                    .text("🠕 Nombre de vidéos visionnées"));
+
+                // Création des points pour les lignes
+                const points = videosParSemaine.map((videos, i) => {
+                    return videos.map((videosSemaine, j) => {
+                        return {
+                            date: new Date(2020, 0, 2 + j * 7),
+                            nbVideos: videosSemaine.length
+                        };
+                    });
+                });
+
+                // Création des lignes
+                const lignes = svg.selectAll('.ligne')
+                    .data(points)
+                    .enter()
+                    .append('g')
+                    .attr('class', 'ligne');
+                
+                lignes.each(function(d, i) { // Pour chaque ligne
+                    const ligne = d3.select(this);
+
+                    const ligneGen = d3.line()
+                        .x(d => echelleX(d.date))
+                        .y(d => echelleY(d.nbVideos));
+
+                    ligne.append('path')
+                        .datum(d)
+                        .attr('d', ligneGen)
+                        .attr('fill', 'none')
+                        .attr('stroke', couleurs[i]) // Une couleur par personne
+                        .attr('stroke-width', 2);
+                });
+            });    
+
+        </script>
+    </body>
+
+</html>

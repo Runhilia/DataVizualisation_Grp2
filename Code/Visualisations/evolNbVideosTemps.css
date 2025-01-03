@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .main {
+    height: 100vh;
+    width: 100vw;;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color : black;
+    font-family: 'Fira Code', monospace;
+    background-color: #cccccc;
+  }
+
+  .main .container {
+    height: 700px;
+    width: 1250px;
+    background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px auto;
+    align-self: center;
+    position: relative;
+    box-shadow: 2px 2px 20px; /* Effet d'ombre autour du container*/
+  }
+
+  .main .container #title {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 600;
+    color: black;
+  }
+  
+  .main .container #visu {
+    width: 1150px;
+    height: 610px;
+    margin-top: 10px;
+  }
+  
+  /* Taille et position du svg */
+  .main .container #visu svg {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+
+  /* Taille des textes */
+  .main .container text {
+    font-size: 1.3em;
+  }
