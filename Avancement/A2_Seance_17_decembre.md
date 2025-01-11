@@ -64,5 +64,5 @@ Nous nous sommes lancés dans la création des graphiques à partir des crazy 8'
 ## Tâches à réaliser pour la prochaine séance
 
 - [X] Finaliser le scraping des données
-- [ ] Continuer la visualisation des données
+- [X] Continuer la visualisation des données
 - [ ] Commencer le quatrième graphique sur la localisation des vidéos visionnées 

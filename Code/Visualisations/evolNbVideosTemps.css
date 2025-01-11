@@ -33,6 +33,15 @@
     font-weight: 600;
     color: black;
   }
+
+  .main .container #affichage {
+    margin-left: 40px;
+    width: 200px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
   
   .main .container #visu {
     width: 1150px;
