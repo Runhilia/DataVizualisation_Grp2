@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+    <head>
+    <meta charset="utf-8" />
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <link rel="stylesheet" href="evolNbVideosTemps.css"/>
+        <style>
+            #visu {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+              gap: 20px; /* Espacement entre les donuts */
+             justify-items: center; /* Centrer les donuts dans chaque cellule */
+             margin: 20px auto; /* Centrer la grille horizontalement */
+             max-width: 600px; /* Limite la largeur totale de la grille */
+            }
+          </style>
+    </head>
+
+    <body>
+        <div class="main">
+            <div class="container">
+                <div id="title">Donut chart du genre de vidéo visionnée par personne</div>
+                <div id="visu"></div>
+                <div id="info"></div>
+                <div id="legend-container"></div>
+            </div>
+        </div>
+
+        <script>
+            function calculDuree(duree){
+                const [hours, minutes, seconds] = duree.split(':').map(Number);
+                return hours * 3600 + minutes * 60 + seconds;
+
+            } 
+
+                        
+            function formatSecondsToHMS(totalSeconds) {
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}`;
+            }
+
+            // Liste des couleur pour le genre
+            const couleursList = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FF7F00",
+                "#7F00FF", "#00FF7F", "#7FFF00", "#FF007F", "#007FFF", "#800000", "#008000", "#000080", "#800080",
+                "#808000", "#800080", "#FFA500", "#B22222", "#FFD700"
+            ];
+
+
+            // Récupère les données du fichier
+            d3.json('../Data/videoData2020.json').then(data => {
+
+                // On met les vidéos dans un tableau pour les manipuler plus facilement
+                const videos = Object.entries(data).map(([url, valeurs]) => ({
+                    url,
+                    ...valeurs,
+                    users: Object.entries(valeurs.users).map(([user, details]) => ({ // On fait pareil pour les utilisateurs à l'intérieur des vidéos
+                        user,
+                        ...details
+                    }))
+                }));
+                // Initialisation d'un objet pour stocker les genres par utilisateur
+                const userGenreCounts = {};
+
+                // Parcours des vidéos
+                videos.forEach(video => {
+                    const genre = video.genre;
+                    const duree = video.duree;
+                    video.users.forEach(({ user }) => {
+                        // Initialisation des données pour chaque utilisateur si nécessaire
+                        if (!userGenreCounts[user]) {
+                            userGenreCounts[user] = {};
+                        }
+                        if (!userGenreCounts[user][genre]) {
+                            userGenreCounts[user][genre] = 0;
+                        }
+                        // Incrémentation du compteur pour le genre
+                        userGenreCounts[user][genre]+= calculDuree(duree);
+                    });
+                });
+
+                // Récupération de tous les genres
+                const allGenres = Array.from(new Set(videos.map(video => video.genre)));
+
+                // Création des données pour le donut chart
+                const donutData = Object.entries(userGenreCounts).map(([user, genreDuration]) => {
+                    const total = Object.values(genreDuration).reduce((sum, duree) => sum + duree, 0);
+
+                    return {
+                        name: user,
+                        axes: allGenres.map(genre => ({
+                            axis: genre,
+                            value: genreDuration[genre] || 0
+                        }))
+                    };
+                });
+                const couleur = d3.scaleOrdinal(couleursList).domain(allGenres);
+
+                nbVideos = {};
+                // Calcul du nombre total de vidéos visionnées pour chaque utilisateur
+                donutData.forEach(user => {
+                    user.axes.forEach(genre => {
+                        nbVideos[user.name] = (nbVideos[user.name] || 0) + genre.value;
+                    });
+                });
+
+                const donutWidth = 150; 
+                const donutHeight = 150;
+                const donutRadius = Math.min(donutWidth, donutHeight) / 2;
+                const marginX = 30;
+                const marginY = 50;
+
+                // Créer les donuts pour chaque utilisateur
+                const donutSvg = d3.select("#visu")
+                .selectAll("svg")
+                .data(donutData)
+                .enter().append("svg")
+                .attr("width", donutWidth)
+                .attr("height", donutHeight +30 )
+                .style("margin", marginY + "px")
+                .style("display", "inline-block")
+                .style("margin-right", marginX + "px");
+
+                // Créer les arcs pour le donut chart
+                const arc = d3.arc()
+                    .innerRadius(donutRadius - 25)
+                    .outerRadius(donutRadius);
+
+                // Créer les données pour le pie chart
+                const pie = d3.pie()
+                    .value(d => d.value);
+
+                // Création du donut chart
+                donutSvg.append("g")
+                    .attr("transform", `translate(${donutWidth / 2}, ${donutHeight / 2})`)
+                    .selectAll("path")
+                    .data(d => pie(d.axes))
+                    .enter().append("path")
+                    .attr("d", arc)
+                    .style("fill", d => couleur(d.data.axis))
+                    .on("mouseover", function (event, d) {
+                        const genre = d.data.axis;
+                        const count = d.data.value;
+                        const total = nbVideos[d3.select(this.parentNode).datum().name];
+                        const pourcentage = ((count / total) * 100).toFixed(2);
+                        console.log(count);
+
+                        // Changer la couleur des autres sections
+                        d3.select(this.parentNode)
+                            .selectAll("path")
+                            .style("opacity", 0.3); // Réduire l'opacité des autres segments
+
+                        // Rétablir l'opacité du segment survolé à 1
+                        d3.select(this).style("opacity", 1);
+
+                        d3.select("#info")
+                            .style("left", event.pageX-80 + "px")
+                            .style("top",  event.pageY-50 + "px")
+                            .style("position", "absolute")
+                            .style("padding", "10px")
+                            .style("border", "1px solid #ddd")
+                            .style("background-color", "#fff")
+                            .style("visibility", "visible")
+                            .style("box-shadow", "0px 0px 5px rgba(0, 0, 0, 0.1)")
+                            .html(`<b>Genre:</b> ${genre}<br><b>Nombre de vidéos:</b> ${formatSecondsToHMS(count)}<br><b>Pourcentage:</b> ${pourcentage}%`);
+                    })
+                    .on("mouseout", function () {
+                        // Rétablir l'opacité
+                        d3.select(this.parentNode)  // Cibler le donut spécifique survolé
+                            .selectAll("path")
+                            .style("opacity", 1);
+
+                        // Vider les informations
+                        d3.select("#info").html("").style("visibility", "hidden");
+                    });
+
+
+                    donutSvg.append("text")
+                    .attr("x", donutWidth / 2)
+                    .attr("y", donutHeight + 20)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "14px")
+                    .text(d => d.name);
+
+                    // Crée la légende dynamiquement
+                    const legend = d3.select("#visu")
+                    .append("div")
+                    .attr("class", "legend")
+                    .selectAll("div")
+                    .data(allGenres)
+                    .enter()
+                    .append("div")
+                    .style("display", "flex")
+                    .style("align-items", "center")
+                    .style("margin", "5px");
+
+                    legend.append("div")
+                        .style("width", "10px")
+                        .style("height", "10px")
+                        .style("margin-right", "10px")
+                        .style("background-color", d => couleur(d));
+
+                    // Ajouter le texte pour chaque genre
+                    legend.append("span")
+                        .text(d => d)
+                        .style("font-size", "12px");
+
+                    legend.on("mouseover", function (event, genre) {
+                        // Réduire l'opacité de toutes les sections sur tous les donuts
+                        d3.selectAll("path").style("opacity", 0.3);
+                    
+                        // Remettre l'opacité des sections correspondant à la catégorie survolée
+                        d3.selectAll("path")
+                            .filter(pathData => pathData.data.axis === genre)
+                            .style("opacity", 1);
+                    })
+                    .on("mouseout", function () {
+                        // Réinitialiser toutes les opacités
+                        d3.selectAll("path").style("opacity", 1);
+                    });
+                });
+                //ajouter le fait de pouvoir select plusieurs catégories, pouvoir choisir le user, affichage 2 par 2
+        </script>
+    </body>
+
+</html>
