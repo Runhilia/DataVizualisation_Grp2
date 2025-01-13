@@ -1,5 +1,3 @@
-console.log("ezrezrzerzerzer")
-
 // Dimensions du graphique
 const largeur = 1150;
 const hauteur = 600;

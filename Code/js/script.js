@@ -67,11 +67,10 @@
                 }
               });
             });
-    
+
             const sortedCategories = Object.entries(stats)
-              .filter(([_, valeurs]) => valeurs.nombreVideos > 0)
               .sort((a, b) => b[1].nombreVideos - a[1].nombreVideos);
-            
+
             return sortedCategories.map(([categorie, valeurs]) => ({
               axis: categorie,
               value: valeurs.nombreVideos
@@ -100,10 +99,15 @@
                     userGenreCounts[user][genre].count++;
                     userGenreCounts[user][genre].totalDuree+= calculDuree(duree);
                     
-                });
-            });
+                });                
+          });
 
-            console.log(userGenreCounts);
+          categories.forEach(categorie => {
+            if (!userGenreCounts[user][categorie]) {
+              userGenreCounts[user][categorie] = { count: 0, totalDuree: 0 };
+            }
+          });
+
             return Object.entries(userGenreCounts[user])
                 .filter(([genre]) => selectedCategories.includes(genre))
                 .map(([genre, value]) => ({
@@ -407,7 +411,7 @@
                 svg.append("text")
                 .attr("text-anchor", "middle")
                 .style("font-size", "14px")
-                .text(d => d.data[0].user);
+                .text(d => d.data[0].totalDuree > 0 ?d.data[0].user : "");
             }
 
     });
