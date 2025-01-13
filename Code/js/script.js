@@ -231,13 +231,11 @@
               
                 const radarWrapper = radarChartGroup.selectAll(".radarWrapper").data(data, d => d.color);
 
-// Gestion des graphiques des utilisateurs désélectionnés
-radarWrapper.exit()
-  .transition()
-  .duration(500)
-  .style("opacity", 0) // Animation pour réduire progressivement l'opacité
-  .remove(); // Supprimer le groupe radarWrapper correspondant
-
+                radarWrapper.exit()
+                  .transition()
+                  .duration(500)
+                  .style("opacity", 0) 
+                  .remove(); 
               
                 const radarWrapperEnter = radarWrapper.enter()
                   .append("g")
