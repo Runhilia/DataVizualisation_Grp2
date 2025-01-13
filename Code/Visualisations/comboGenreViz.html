@@ -45,6 +45,7 @@
       #visu, #donuts {
         flex: 1;
         min-width: 200px;
+        margin-bottom: 50px;
       }
       #donuts {
         display: grid;
@@ -101,7 +102,7 @@
         <div id="info"></div>
     </div>
     <div>
-      <label>Choisissez les utilisateurs et les catégorie à afficher : </label>
+      <label>Choisissez les utilisateurs et les catégories à afficher : </label>
       <div id="control">
           <div id="user-select">
           <!-- Utilisateurs ajoutés dynamiquement ici -->
@@ -114,9 +115,9 @@
 
 
     <script>
-        const margin = { top: 60, right: 100, bottom: 20, left: 70 },
+        const margin = { top: 60, right: 100, bottom: 20, left: 100 },
             width = 400,
-            height = 400;
+            height = 450;
 
     const utilisateurs = ["Angeline", "Loric", "Mathys", "Thomas"];
     const couleurs = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
@@ -128,9 +129,8 @@
       "Nonprofits & Activism"
     ];
 
-    const couleursDonuts = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FF7F00",
-      "#7F00FF", "#00FF7F", "#7FFF00", "#FF007F", "#007FFF", "#800000", "#008000", "#000080", "#800080",
-      "#808000", "#800080", "#FFA500", "#B22222", "#FFD700"
+    const couleursDonuts = ["#911215", "#F5BB5F", "#6D46BE", "#1FA83C", "#D47DA7", "#D92689", "#AE67EA",
+      "#2B35B7", "#6684D5", "#A15738", "#5E8391", "#03C79A", "#167DE8", "#BA259C", "#AA95F5"
   ];
 
     const utilisateurDefaut = "Angeline";
@@ -187,7 +187,7 @@
             const sortedCategories = Object.entries(stats)
               .filter(([_, valeurs]) => valeurs.nombreVideos > 0)
               .sort((a, b) => b[1].nombreVideos - a[1].nombreVideos);
-    
+            
             return sortedCategories.map(([categorie, valeurs]) => ({
               axis: categorie,
               value: valeurs.nombreVideos
@@ -219,7 +219,7 @@
                 });
             });
 
-
+            console.log(userGenreCounts);
             return Object.entries(userGenreCounts[user])
                 .filter(([genre]) => selectedCategories.includes(genre))
                 .map(([genre, value]) => ({
@@ -330,6 +330,7 @@
                 axis.append("text")
                   .attr("class", "legend")
                   .style("font-size", "12px")
+                  .style("fill", (d, i) => couleursDonuts[categories.indexOf(d)])
                   .attr("text-anchor", "middle")
                   .attr("dy", "0.35em")
                   .attr("x", (d, i) => rScale(cfg.maxValue * 1.2) * Math.cos(angleSlice * i - Math.PI / 2))
