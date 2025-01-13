@@ -1,10 +1,76 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Visualisation de données personnelles de la plateforme YouTube</title>
-    </head>
-    <body>
-        <h1>Bienvenue sur notre page !</h1>
-        <p>Pour l'instant il n'y a pas grand chose...</p>
-    </body>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Visualisation de données personnelles de la plateforme YouTube</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <nav>
+        <a href="#membres">Accueil</a>
+        <a href="#contextualisation">Contextualisation</a>
+        <a href="#evolution">Évolution du nombre de vidéos</a>
+        <a href="#categories">Visualisation par catégories</a>
+    </nav>
+
+    <h1>Visualisation de données personnelles de la plateforme YouTube</h1>
+
+    <section id="membres">
+        <h2>Membres</h2>
+        <p>
+            Angéline MARC <br>
+            Loric GROS <br>
+            Mathys SAMBET <br>
+            Thomas HUGUENEL
+        </p>
+    </section>
+
+    <section id="contextualisation">
+        <h2>Contextualisation</h2>
+        <h3>Introduction</h3>
+        <p>Nous avons chacun l'habitude de regarder des vidéos de tout type sur la plateforme YouTube depuis des années, mais est-il possible de pouvoir comparer la quantité de vidéos vues au cours du temps et les types. Ces visualisations vont pouvoir nous permettre de comparer nos habitudes de visionnage</p>
+        <h3>Public concerné</h3>
+        <p>Notre projet s’adresse en partie à nous-mêmes car nous trouvons intéressant la
+            possibilité d’observer à travers une visualisation nos données concernant YouTube. On
+            peut imaginer que des personnes extérieures curieuses pourraient aussi observer la
+            visualisation. Il est également possible que ce projet intéresse des personnes à la recherche
+            de données pour réaliser des études et des statistiques sur un sujet similaire au nôtre.</p>
+        <h3>Sources</h3>
+        <p>La réalisation de notre projet se base sur nos données personnelles liées à la
+            plateforme YouTube. Nous les avons récupérées grâce à l’outil Google Takeout qui permet
+            de télécharger une copie des données stockées sur les services Google. Cela nous a permis
+            d’obtenir de nombreuses informations telles que nos abonnements ou tous les
+            commentaires postés mais nous avons principalement retenu notre historique de vidéos.<br>
+            La catégorie et la durée des vidéos qui n'était pas présente avec le Google Takeout ont pu être récupérées grâce a selenium</p>
+    </section>
+
+    <section id="evolution">
+        <h2>Évolution du nombre de vidéos</h2>
+    </section>
+
+    <section id="categories">
+        <h2>Visualisation par catégories</h2>
+        <div>
+            <label>Choisissez les utilisateurs et les catégories à afficher : </label>
+            <div id="control">
+                <div id="user-select">
+                <!-- Utilisateurs ajoutés dynamiquement ici -->
+                </div>
+                <div id="category-select">
+                <!-- Les catégories seront ajoutées dynamiquement ici -->
+                </div>
+            </div>
+        </div>
+        <div class="genre_chart">
+            <div id="visu"></div>
+            <div id="tooltip" class="tooltip"></div>
+            <div id="donuts"></div>
+            <div id="info"></div>
+        </div>
+    </section>
+
+    <script src="js/script.js"></script> <!-- Inclure le fichier script.js -->
+</body>
 </html>

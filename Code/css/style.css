@@ -1,0 +1,208 @@
+/* Style général */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Style pour la barre de navigation */
+nav {
+    background-color: #007BFF;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+nav a {
+    margin: 0 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #ff9800;
+}
+
+body {
+    padding-top: 70px; /* Pour compenser la barre de navigation fixe */
+}
+
+h1 {
+    margin-left: 5%;
+}
+
+/* Style des titres */
+h1, h2 {
+    font-family: 'Helvetica', sans-serif;
+    color: #333;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+/* Style des sections */
+section {
+    margin: 30px 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+section:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Style des paragraphes */
+p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Style des catégories */
+.tooltip {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.gridCircle {
+    fill: #CDCDCD;
+    stroke: #CDCDCD;
+    fill-opacity: 0.1;
+}
+
+.radarStroke {
+    stroke-width: 2px;
+}
+
+.radarArea {
+    fill-opacity: 0.1;
+}
+
+.legend {
+    font-size: 12px;
+    text-anchor: middle;
+}
+
+.radarCircle {
+    fill-opacity: 0.8;
+    cursor: pointer;
+}
+
+.level-label {
+    font-size: 10px;
+    fill: black;
+}
+
+/* Graphiques */
+.genre_chart {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+#visu, #donuts {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 30px;
+}
+
+#donuts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    justify-items: center;
+    margin-right: 30px;
+}
+
+#visu {
+    flex: 2;
+    min-width: 500px;
+}
+
+#info {
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+}
+
+/* Contrôle utilisateur et catégorie */
+#control {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+#user-select, #category-select {
+    flex: 1;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .genre_chart {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #visu, #donuts {
+        flex: none;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    #donuts {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    #donuts {
+        gap: 10px;
+    }
+
+    nav a {
+        font-size: 14px;
+        margin: 0 10px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    section {
+        padding: 15px;
+    }
+}
