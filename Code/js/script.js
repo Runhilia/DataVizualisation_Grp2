@@ -150,44 +150,51 @@
 
             function drawRadarChart(id, data, options) {
                 const cfg = {
-                  w: 400,
-                  h: 400,
+                  w: 600,
+                  h: 600,
                   margin: { top: 20, right: 20, bottom: 20, left: 20 },
                   levels: 5,
                   maxValue: 0,
                   roundStrokes: false,
                   color: d3.scaleOrdinal(d3.schemeCategory10)
                 };
-          
+              
                 Object.keys(options).forEach(key => cfg[key] = options[key]);
-          
+              
                 const radius = Math.min(cfg.w / 2, cfg.h / 2);
-          
-                d3.select(id).select("svg").remove();
-          
-                const svg = d3.select(id)
-                  .append("svg")
-                  .attr("width", cfg.w + cfg.margin.left + cfg.margin.right)
-                  .attr("height", cfg.h + cfg.margin.top + cfg.margin.bottom)
-                  .append("g")
-                  .attr("transform", `translate(${cfg.w / 2 + cfg.margin.left},${cfg.h / 2 + cfg.margin.top})`);
-          
+              
+                const svg = d3.select(id).select("svg");
+                if (svg.empty()) {
+                  d3.select(id)
+                    .append("svg")
+                    .attr("width", cfg.w + cfg.margin.left + cfg.margin.right)
+                    .attr("height", cfg.h + cfg.margin.top + cfg.margin.bottom)
+                    .append("g")
+                    .attr("class", "radarChartGroup")
+                    .attr("transform", `translate(${cfg.w / 2 + cfg.margin.left},${cfg.h / 2 + cfg.margin.top})`);
+                }
+              
+                const radarChartGroup = d3.select(`${id} .radarChartGroup`);
                 const allAxis = data[0].data.map(d => d.axis);
                 const total = allAxis.length;
                 const angleSlice = Math.PI * 2 / total;
-          
+              
                 const rScale = d3.scaleLinear()
                   .range([0, radius])
                   .domain([0, cfg.maxValue]);
-          
-                const axisGrid = svg.append("g").attr("class", "axisWrapper");
-          
+              
+                radarChartGroup.selectAll(".axisWrapper").remove();
+              
+                const axisGrid = radarChartGroup.append("g").attr("class", "axisWrapper");
+              
                 axisGrid.selectAll(".levels")
                   .data(d3.range(1, cfg.levels + 1).reverse())
                   .enter().append("circle")
                   .attr("class", "gridCircle")
-                  .attr("r", d => radius / cfg.levels * d);
-          
+                  .attr("r", d => radius / cfg.levels * d)
+                  .style("fill", "#CDCDCD")
+                  .style("fill-opacity", 0.1);
+              
                 axisGrid.selectAll(".level-label")
                   .data(d3.range(1, cfg.levels + 1).reverse())
                   .enter().append("text")
@@ -196,12 +203,12 @@
                   .attr("y", d => -radius / cfg.levels * d)
                   .attr("dy", "-0.3em")
                   .text(d => `${Math.round(cfg.maxValue / cfg.levels * d)} vidéos`);
-          
+              
                 const axis = axisGrid.selectAll(".axis")
                   .data(allAxis)
                   .enter().append("g")
                   .attr("class", "axis");
-          
+              
                 axis.append("line")
                   .attr("x1", 0)
                   .attr("y1", 0)
@@ -210,51 +217,96 @@
                   .attr("class", "line")
                   .style("stroke", "white")
                   .style("stroke-width", "2px");
-          
+              
                 axis.append("text")
-                  .attr("class", "legend")
-                  .style("font-size", "12px")
-                  .style("fill", (d, i) => couleursDonuts[categories.indexOf(d)])
-                  .attr("text-anchor", "middle")
-                  .attr("dy", "0.35em")
-                  .attr("x", (d, i) => rScale(cfg.maxValue * 1.2) * Math.cos(angleSlice * i - Math.PI / 2))
-                  .attr("y", (d, i) => rScale(cfg.maxValue * 1.2) * Math.sin(angleSlice * i - Math.PI / 2))
-                  .text(d => d);
-          
-                const radarLine = d3.lineRadial()
-                  .curve(d3.curveLinearClosed)
-                  .radius(d => rScale(d.value))
-                  .angle((d, i) => i * angleSlice);
-          
-                const blobWrapper = svg.selectAll(".radarWrapper")
-                  .data(data)
-                  .enter().append("g")
+                .attr("class", "legend")
+                .style("font-size", "12px")
+                .style("fill", (d, i) => couleursDonuts[categories.indexOf(d)])
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em")
+                .attr("x", (d, i) => rScale(cfg.maxValue * 1.2) * Math.cos(angleSlice * i - Math.PI / 2))
+                .attr("y", (d, i) => rScale(cfg.maxValue * 1.2) * Math.sin(angleSlice * i - Math.PI / 2))
+                .text(d => d);
+
+              
+                const radarWrapper = radarChartGroup.selectAll(".radarWrapper").data(data, d => d.color);
+
+// Gestion des graphiques des utilisateurs désélectionnés
+radarWrapper.exit()
+  .transition()
+  .duration(500)
+  .style("opacity", 0) // Animation pour réduire progressivement l'opacité
+  .remove(); // Supprimer le groupe radarWrapper correspondant
+
+              
+                const radarWrapperEnter = radarWrapper.enter()
+                  .append("g")
                   .attr("class", "radarWrapper");
-          
-                blobWrapper.append("path")
-                  .attr("class", "radarStroke")
-                  .attr("d", d => radarLine(d.data))
-                  .style("stroke", d => d.color)
-                  .style("stroke-width", "2px")
-                  .style("fill", "none");
-          
-                blobWrapper.append("path")
+              
+                radarWrapperEnter.append("path")
                   .attr("class", "radarArea")
-                  .attr("d", d => radarLine(d.data))
                   .style("fill", d => d.color)
                   .style("fill-opacity", 0.1);
-          
-                const tooltip = d3.select("#tooltip");
-          
-                blobWrapper.selectAll(".radarCircle")
-                  .data(d => d.data)
-                  .enter().append("circle")
+              
+                radarWrapperEnter.append("path")
+                  .attr("class", "radarStroke")
+                  .style("stroke", d => d.color)
+                  .style("stroke-width", 2)
+                  .style("fill", "none");
+              
+                radarWrapperEnter.append("path")
+                  .attr("class", "radarLine")
+                  .style("stroke", "white")
+                  .style("stroke-width", 2)
+                  .style("fill", "none");
+              
+                const radarWrapperMerged = radarWrapperEnter.merge(radarWrapper);
+              
+                radarWrapperMerged.select(".radarStroke")
+                  .transition()
+                  .duration(750)
+                  .attr("d", d => d3.lineRadial()
+                    .curve(d3.curveLinearClosed)
+                    .radius(p => rScale(p.value))
+                    .angle((p, i) => i * angleSlice)(d.data));
+              
+                radarWrapperMerged.select(".radarArea")
+                  .transition()
+                  .duration(750)
+                  .attr("d", d => d3.lineRadial()
+                    .curve(d3.curveLinearClosed)
+                    .radius(p => rScale(p.value))
+                    .angle((p, i) => i * angleSlice)(d.data));
+              
+                const radarCircle = radarWrapperMerged.selectAll(".radarCircle").data(d => d.data, p => p.axis);
+              
+                radarCircle.enter()
+                  .append("circle")
                   .attr("class", "radarCircle")
                   .attr("r", 5)
                   .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
                   .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
                   .style("fill", (d, i, nodes) => d3.select(nodes[i].parentNode).datum().color)
                   .style("fill-opacity", 0.8)
+                  .merge(radarCircle)
+                  .transition()
+                  .duration(750)
+                  .attr("cx", (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
+                  .attr("cy", (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
+                  .on("end", function () {
+                    d3.select(this).raise();  
+                    d3.select(this.parentNode).select(".radarLine").raise(); 
+                  });
+              
+                radarCircle.exit()
+                  .transition()
+                  .duration(500)
+                  .style("opacity", 0)
+                  .remove();
+              
+                const tooltip = d3.select("#tooltip");
+              
+                radarWrapperMerged.selectAll(".radarCircle")
                   .on("mouseover", function (event, d) {
                     tooltip.style("opacity", 1)
                       .html(`${d.axis}: ${d.value} vidéos`)
@@ -268,7 +320,11 @@
                   .on("mouseout", function () {
                     tooltip.style("opacity", 0);
                   });
-              }
+              
+                radarChartGroup.selectAll(".axisWrapper")
+                  .lower(); 
+            }
+            
 
             function calculDuree(duree){
                 const [hours, minutes, seconds] = duree.split(':').map(Number);
