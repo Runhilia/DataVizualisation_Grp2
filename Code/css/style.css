@@ -206,3 +206,11 @@ p {
         padding: 15px;
     }
 }
+
+.radarArea {
+    pointer-events: none; /* Désactive les événements de la souris pour les zones */
+}
+  
+.radarCircle {
+    pointer-events: all; /* Active les événements de la souris pour les cercles */
+}

@@ -182,6 +182,14 @@
                 const allAxis = data[0].data.map(d => d.axis);
                 const total = allAxis.length;
                 const angleSlice = Math.PI * 2 / total;
+
+                data.forEach(d => {
+                  d.data = allAxis.map(axis => {
+                    const matchingPoint = d.data.find(p => p.axis === axis);
+                    return matchingPoint || { axis, value: 0 }; 
+                  });
+                });
+
               
                 const rScale = d3.scaleLinear()
                   .range([0, radius])
@@ -310,6 +318,7 @@
               
                 radarWrapperMerged.selectAll(".radarCircle")
                   .on("mouseover", function (event, d) {
+                    console.log(d)
                     tooltip.style("opacity", 1)
                       .html(`${d.axis}: ${d.value} vidéos`)
                       .style("left", `${event.pageX + 10}px`)
