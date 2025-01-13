@@ -318,7 +318,6 @@
               
                 radarWrapperMerged.selectAll(".radarCircle")
                   .on("mouseover", function (event, d) {
-                    console.log(d)
                     tooltip.style("opacity", 1)
                       .html(`${d.axis}: ${d.value} vidéos`)
                       .style("left", `${event.pageX + 10}px`)

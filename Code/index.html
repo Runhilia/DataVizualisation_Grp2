@@ -21,11 +21,13 @@
     <section id="membres">
         <h2>Membres</h2>
         <p>
-            Angéline MARC <br>
-            Loric GROS <br>
-            Mathys SAMBET <br>
-            Thomas HUGUENEL
+            Angéline MARC (<a href="mailto:angeline.marc@etu.univ-lyon1.fr">angeline.marc@etu.univ-lyon1.fr</a>) <br>
+            Loric GROS (<a href="mailto:loric.gros@etu.univ-lyon1.fr">loric.gros@etu.univ-lyon1.fr</a>) <br>
+            Mathys SAMBET (<a href="mailto:mathys.sambet@etu.univ-lyon1.fr">mathys.sambet@etu.univ-lyon1.fr</a>) <br>
+            Thomas HUGUENEL (<a href="mailto:thomas.huguenel@etu.univ-lyon1.fr">thomas.huguenel@etu.univ-lyon1.fr</a>)
         </p>
+        
+        <a href="https://lyondataviz.github.io/teaching/lyon1-m2/2024/">Dataviz cours Lyon 1 M2</a>
     </section>
 
     <section id="contextualisation">
@@ -49,6 +51,13 @@
 
     <section id="evolution">
         <h2>Évolution du nombre de vidéos</h2>
+                <select id="affichage" onchange="changeIntervalle()">
+                <option value="jour">Affichage par jour</option>
+                <option value="semaine" selected="selected">Affichage par semaine</option>
+                <option value="mois">Affichage par mois</option>
+                </select>
+
+                <div id="visuNbVid"></div>
     </section>
 
     <section id="categories">
@@ -57,10 +66,8 @@
             <label>Choisissez les utilisateurs et les catégories à afficher : </label>
             <div id="control">
                 <div id="user-select">
-                <!-- Utilisateurs ajoutés dynamiquement ici -->
                 </div>
                 <div id="category-select">
-                <!-- Les catégories seront ajoutées dynamiquement ici -->
                 </div>
             </div>
         </div>
@@ -73,16 +80,14 @@
     </section>
 
     <section id="cordes">
-        <div class="main">
-            <div class="container">
                 <h2>Comparaison des vidéos regardées</h2>
 
                 <div id="visuCorde"></div>
-            </div>
-        </div>
     </section>
 
+    
     <script src="js/script.js"></script>
     <script src="js/scriptCorde.js"></script>
+    <script src="js/scriptNbVid.js"></script>
 </body>
 </html>

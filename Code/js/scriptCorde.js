@@ -7,7 +7,7 @@ const rayonExterne = rayonInterne + 10;
 const marge = {haut: 10, droite: 20, bas: 20, gauche: 20};
 
 // Crée un élément SVG
-var svg = d3.
+var svg1 = d3.
     select('#visuCorde').
     append('svg')
     .attr('width', largeur)
@@ -62,7 +62,7 @@ d3.json('Data/videoData2020.json').then(data => {
         .outerRadius(rayonExterne);
 
     // Ajout des arcs des utilisateursCorde
-    svg.append("g")
+    svg1.append("g")
         .selectAll("path")
         .data(cordes.groups)
         .enter()
@@ -72,7 +72,7 @@ d3.json('Data/videoData2020.json').then(data => {
         .attr("d", arcs);
 
     // Ajout des noms des utilisateursCorde
-    svg.append("g")
+    svg1.append("g")
         .selectAll("text")
         .data(cordes.groups)
         .enter()
@@ -90,7 +90,7 @@ d3.json('Data/videoData2020.json').then(data => {
     const liens = d3.ribbon()
         .radius(rayonInterne);
 
-    svg.append("g")
+    svg1.append("g")
         .selectAll("path")
         .data(cordes)
         .enter()
