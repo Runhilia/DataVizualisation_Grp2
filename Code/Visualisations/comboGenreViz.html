@@ -39,21 +39,45 @@
       }
       .genre_chart {
         display: flex;
+        flex-wrap: wrap;
         align-items: flex-start;
       }
       #visu, #donuts {
         flex: 1;
-        min-width: 300px;
+        min-width: 200px;
       }
       #donuts {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
         justify-items: center;
-        margin-right: 300px;
+        margin-right: 200px;
       }
       #visu {
         flex: 2;
+        min-width: 500px;
+      }
+
+      @media (max-width: 768px) {
+        .genre_chart {
+          flex-direction: column; /* Empile les sections verticalement */
+        }
+    
+        #visu, #donuts {
+          flex: none; /* Permet de ne pas prendre trop d'espace */
+          width: 100%; /* Prend toute la largeur disponible */
+          margin-right: 0; /* Supprime la marge à droite */
+        }
+    
+        #donuts {
+          grid-template-columns: 1fr; /* Un seul graphique par ligne */
+        }
+      }
+    
+      @media (max-width: 480px) {
+        #donuts {
+          gap: 10px; /* Réduit l'espace entre les Donut Charts */
+        }
       }
 
   </style>
@@ -359,9 +383,9 @@
                         
             function formatSecondsToHMS(totalSeconds) {
                 const hours = Math.floor(totalSeconds / 3600);
+                const formattedHours = String(hours).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // Ajoute des espaces tous les 3 chiffres
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
-                return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}`;
+                return `${formattedHours}h ${String(minutes).padStart(2, '0')}`;
             }
 
             function drawDonutCharts(id, data) {
@@ -403,8 +427,8 @@
                 .on("mouseover", function (event, d) {
                     const genre = d.data.axis;
                     const duree = d.data.totalDuree;
-                    const total = nbVideos[d.user];
-                    const pourcentage = ((d.data.count / total) * 100).toFixed(2);
+                    const total = d3.sum(d3.select(this.parentNode).datum().data, segment => segment.totalDuree);
+                    const pourcentage = ((d.data.totalDuree / total) * 100).toFixed(2);
 
                     d3.select(this.parentNode)
                         .selectAll("path")
@@ -433,10 +457,8 @@
                 });
         
                 svg.append("text")
-                .attr("x", width / 2)
-                .attr("y", height + 20)
                 .attr("text-anchor", "middle")
-                .style("font-size", "50px")
+                .style("font-size", "14px")
                 .text(d => d.data[0].user);
             }
 
