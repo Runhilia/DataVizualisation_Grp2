@@ -1,120 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <style>
-    .tooltip {
-        position: absolute;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 5px;
-        font-size: 12px;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-      .gridCircle {
-        fill: #CDCDCD;
-        stroke: #CDCDCD;
-        fill-opacity: 0.1;
-      }
-      .radarStroke {
-        stroke-width: 2px;
-      }
-      .radarArea {
-        fill-opacity: 0.1;
-      }
-      .legend {
-        font-size: 12px;
-        text-anchor: middle;
-      }
-      .radarCircle {
-        fill-opacity: 0.8;
-        cursor: pointer;
-      }
-      .level-label {
-        font-size: 10px;
-        fill: black;
-      }
-      .genre_chart {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-      }
-      #visu, #donuts {
-        flex: 1;
-        min-width: 200px;
-        margin-bottom: 50px;
-      }
-      #donuts {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        justify-items: center;
-        margin-right: 200px;
-      }
-      #visu {
-        flex: 2;
-        min-width: 500px;
-      }
 
-      @media (max-width: 768px) {
-        .genre_chart {
-          flex-direction: column; /* Empile les sections verticalement */
-        }
-    
-        #visu, #donuts {
-          flex: none; /* Permet de ne pas prendre trop d'espace */
-          width: 100%; /* Prend toute la largeur disponible */
-          margin-right: 0; /* Supprime la marge à droite */
-        }
-    
-        #donuts {
-          grid-template-columns: 1fr; /* Un seul graphique par ligne */
-        }
-      }
-    
-      @media (max-width: 480px) {
-        #donuts {
-          gap: 10px; /* Réduit l'espace entre les Donut Charts */
-        }
-      }
-
-  </style>
-
-</head>
-
-<body>
-    
-    <div class="genre_chart">
-      <div>
-          <div id="visu">
-            <h3>Visualisation du nombre de vidéo vue par personne et par genre</h3>
-          </div>
-      </div>
-        <div id="tooltip" class="tooltip"></div>
-        <div>
-          <h3>Visualisation de la durée des vidéos vue par personne et par genre</h3>
-          <div id="donuts">
-          </div>
-      </div>
-        <div id="info"></div>
-    </div>
-    <div>
-      <label>Choisissez les utilisateurs et les catégories à afficher : </label>
-      <div id="control">
-          <div id="user-select">
-          <!-- Utilisateurs ajoutés dynamiquement ici -->
-          </div>
-          <div id="category-select">
-          <!-- Les catégories seront ajoutées dynamiquement ici -->
-          </div>
-      </div>
-  </div>
-
-
-    <script>
         const margin = { top: 60, right: 100, bottom: 20, left: 100 },
             width = 400,
             height = 450;
@@ -136,7 +20,7 @@
     const utilisateurDefaut = "Angeline";
     const categoriesDefaut = ["Gaming", "Music", "Education", "Entertainment", "Comedy"];
 
-    d3.json("../Data/videoData2020.json").then(data => {
+    d3.json("Data/videoData2020.json").then(data => {
       const videos = Object.entries(data).map(([url, valeurs]) => ({
         url,
         ...valeurs,
@@ -473,10 +357,3 @@
             }
 
     });
-
-
-
-
-    </script>
-</body>
-</html>
