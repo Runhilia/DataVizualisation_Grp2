@@ -85,23 +85,32 @@
 </head>
 
 <body>
-    <div>
-        <label>Choisissez les utilisateurs et les catégorie à afficher : </label>
-        <div id="control">
-            <div id="user-select">
-            <!-- Utilisateurs ajoutés dynamiquement ici -->
-            </div>
-            <div id="category-select">
-            <!-- Les catégories seront ajoutées dynamiquement ici -->
-            </div>
-        </div>
-    </div>
+    
     <div class="genre_chart">
-        <div id="visu"></div>
+      <div>
+          <div id="visu">
+            <h3>Visualisation du nombre de vidéo vue par personne et par genre</h3>
+          </div>
+      </div>
         <div id="tooltip" class="tooltip"></div>
-        <div id="donuts"></div>
+        <div>
+          <h3>Visualisation de la durée des vidéos vue par personne et par genre</h3>
+          <div id="donuts">
+          </div>
+      </div>
         <div id="info"></div>
     </div>
+    <div>
+      <label>Choisissez les utilisateurs et les catégorie à afficher : </label>
+      <div id="control">
+          <div id="user-select">
+          <!-- Utilisateurs ajoutés dynamiquement ici -->
+          </div>
+          <div id="category-select">
+          <!-- Les catégories seront ajoutées dynamiquement ici -->
+          </div>
+      </div>
+  </div>
 
 
     <script>
