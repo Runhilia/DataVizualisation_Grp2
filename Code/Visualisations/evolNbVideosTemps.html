@@ -201,8 +201,30 @@
                         // Evènement qui se produit lorsqu'on enlève la souris de la courbe
                         .on('mouseout', function() {
                             enleverSurvolCourbe();
+                        })
+                        .on('click', function() {
+                            afficheSemaine(this)
                         });
                 });
+
+                function afficheSemaine(courbe) {
+
+                    const mouseX = d3.pointer(event)[0];
+                    const dateActuelle = echelleX.invert(mouseX);
+
+                    // Trouve la semaine correspondante
+                    const debutAnnee = new Date(2020, 0, 1 - 2); // Début de l'année ajusté
+                    const semaineIndex = Math.floor((dateActuelle - debutAnnee) / (7 * 24 * 60 * 60 * 1000));
+                    
+                    // Calcule la semaine actuelle
+                    const semaine = semaineIndex + 1;
+
+                    // Ouvre la page 'test_semaine.html' avec le paramètre 'semaine'
+                    window.open(`affiche_semaine.html?semaine=${semaine}`, '_blank');
+
+                    return semaine;
+                }
+
 
                 // Création de la légende en haut à droite
                 const largeurLegende = 130;
@@ -312,6 +334,7 @@
                 }
 
             });
+
 
             // Fonction qui change l'intervalle d'affichage
             function changeIntervalle() {
