@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Évolution des vidéos Youtube- Semaine par Semaine</title>
+    <style>
+        /* style généré avec chatgpt*/
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        svg {
+            font-family: Arial, sans-serif;
+        }
+        .line {
+            fill: none;
+            stroke-width: 2;
+        }
+        .axis-label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .legend {
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .small-text {
+            font-size: 10px;
+            fill: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="prevWeek">Semaine précédente</button>
+        <span id="currentWeek"></span>
+        <button id="nextWeek">Semaine suivante</button>
+    </div>
+    <div id="chart"></div>
+
+    <script>
+        // Dimensions et marges
+        const width = 1150;
+        const height = 600;
+        const margin = { top: 40, right: 150, bottom: 80, left: 60 };
+
+        const utilisateurs = ["Angeline", "Loric", "Mathys", "Thomas"];
+        const couleurs = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
+
+        // Création de l'élément SVG
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        let currentWeekStart = new Date(2020, 0, 1); // Début de l'année 2020
+
+        // Fonction pour récupérer le numéro de semaine de l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const semaine = parseInt(urlParams.get('semaine'), 10);
+
+        // Calculer la date du début de la semaine en fonction du numéro de la semaine
+        function getStartOfWeek(year, week) {
+            const date = new Date(year, 0, 1 + (week - 1) * 7);
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day == 0 ? -6 : 1); // Calculer le lundi de la semaine
+            return new Date(date.setDate(diff));
+        }
+
+        currentWeekStart = getStartOfWeek(2020, semaine);
+
+        //fait avec chatgpt
+        function formatWeek(start) {
+            const end = new Date(start);
+            end.setDate(end.getDate() + 6);
+            return `${start.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} - ${end.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}`;
+        }
+
+        function updateChart(data) {
+            d3.select("#currentWeek").text(`Semaine du ${formatWeek(currentWeekStart)}`);
+
+            // Filtrer les données pour la semaine courante
+            const endWeek = new Date(currentWeekStart);
+            endWeek.setDate(endWeek.getDate() + 6);
+
+            const filteredData = utilisateurs.map(user => {
+                const userData = data.filter(d => 
+                    d.user === user && 
+                    d.date >= currentWeekStart && 
+                    d.date <= endWeek
+                );
+
+                const aggregate = d3.rollup(
+                    userData,
+                    v => v.length,
+                    d => `${d.day}-${d.hour}`
+                );
+
+                const completeData = [];
+                for (let day = 0; day < 7; day++) {
+                    for (let hour = 0; hour < 24; hour++) {
+                        completeData.push({
+                            day,
+                            hour,
+                            count: aggregate.get(`${day}-${hour}`) || 0
+                        });
+                    }
+                }
+                return completeData;
+            });
+
+            // Échelles
+            const x = d3.scaleBand()
+                .domain(d3.range(7).flatMap(day => d3.range(24).map(hour => `${day}-${hour}`))) // Chaque jour et chaque heure
+                .range([margin.left, width - margin.right])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(filteredData.flat(), d => d.count)]) // Max sur le nombre de vidéos
+                .nice()
+                .range([height - margin.bottom, margin.top]);
+
+            // Axes
+            svg.selectAll(".axis").remove();
+
+            const xAxis = g => {
+                const dayLabels = g.selectAll(".day-label")
+                    .data(d3.range(7))
+                    .join("text")
+                    .attr("class", "axis-label")
+                    .attr("x", day => x(`${day}-6`) + x.bandwidth() * 6)
+                    .attr("y", height - margin.bottom + 20)
+                    .attr("text-anchor", "middle")
+                    .text(day => ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"][day]);
+
+                const hourLabels = g.selectAll(".hour-label")
+                    .data(x.domain())
+                    .join("text")
+                    .attr("class", "small-text")
+                    .attr("x", key => x(key) + x.bandwidth() / 2)
+                    .attr("y", height - margin.bottom + 35)
+                    .attr("text-anchor", "middle")
+                    .text(key => +key.split("-")[1] % 6 === 0 ? key.split("-")[1] + "h" : "");
+            };
+
+            const yAxis = d3.axisLeft(y);
+
+            svg.append("g")
+                .attr("class", "y-axis axis")
+                .attr("transform", `translate(${margin.left},0)`)
+                .call(yAxis);
+
+            svg.append("g")
+                .attr("class", "x-axis axis")
+                .call(xAxis);
+
+            svg.selectAll(".line").remove();
+
+            // Tracer les lignes
+            filteredData.forEach((data, i) => {
+                const line = d3.line()
+                    .x(d => x(`${d.day}-${d.hour}`) + x.bandwidth() / 2) // Centrer sur la bande
+                    .y(d => y(d.count)) // Afficher le nombre de vidéos
+
+                svg.append("path")
+                    .datum(data)
+                    .attr("class", `line utilisateur-${i}`)
+                    .attr("stroke", couleurs[i])
+                    .attr("d", line)
+                    .attr("opacity", 1) // Initialement visible
+                    .on("mouseover", function() {
+                        d3.selectAll(".line")
+                            .transition()
+                            .duration(300)
+                            .attr("opacity", 0.2); // Diminuer l'opacité des autres courbes
+                        d3.select(this)
+                            .transition()
+                            .duration(300)
+                            .attr("opacity", 1); // Garder la courbe survolée à 100% visible
+                    })
+                    .on("mouseout", function() {
+                        d3.selectAll(".line")
+                            .transition()
+                            .duration(300)
+                            .attr("opacity", 1); // Rétablir l'opacité normale des courbes
+                    });
+            });
+
+            // Création de la légende en haut à droite
+            // code repris à thomas
+            const largeurLegende = 130;
+            const hauteurLegende = utilisateurs.length * 20 + 10;
+            const listeCourbesAffichées = [true, true, true, true];
+
+            const legende = svg.append('g')
+                .attr('class', 'legende')
+                .attr('transform', `translate(${width - margin.right + 10}, ${margin.top})`);
+
+            // Ajout du fond
+            legende.append('rect')
+                .attr('width', largeurLegende)
+                .attr('height', hauteurLegende)
+                .attr('fill', 'whitesmoke') 
+                .attr('stroke', 'black')
+                .attr('rx', 5) // Coins arrondis
+                .attr('ry', 5); // Coins arrondis
+
+            // Ajout des noms
+            legende.selectAll('.legende')
+                .data(utilisateurs)
+                .enter()
+                .append('g')
+                .attr('class', 'legende')
+                .attr('transform', (d, i) => `translate(5, ${i * 20 + 10})`) // Affichage des noms les uns en dessous des autres
+                .each(function(d, i) {
+                    const element = d3.select(this);
+                    // Carré de couleur
+                    element.append('rect')
+                        .attr('width', 10)
+                        .attr('height', 10)
+                        .attr('fill', couleurs[i]);
+                    // Nom de la personne
+                    element.append('text')
+                        .attr('x', 15)
+                        .attr('y', 10)
+                        .text(d);
+                    // Evènement qui se produit lorsqu'on clique sur le nom
+                    element.on('click', () => {
+                        listeCourbesAffichées[i] = !listeCourbesAffichées[i]; // On inverse l'état de la courbe
+                        // On affiche ou cache la courbe
+                        d3.selectAll(`.utilisateur-${i}`)
+                            .transition()
+                            .delay(0)
+                            .duration(300)
+                            .attr('display', listeCourbesAffichées[i] ? 'block' : 'none');
+                        // On affiche ou cache le nom dans la légende
+                        element.selectAll('text')
+                            .transition()
+                            .delay(0)
+                            .duration(300)
+                            .attr('fill', listeCourbesAffichées[i] ? 'black' : 'lightgray');
+                    });
+                });
+        }
+
+        // Charger les données
+        d3.json("videoData2020.json").then(data => {
+            // Transformer les données
+            const parsedData = [];
+            Object.values(data).forEach(video => {
+                Object.entries(video.users).forEach(([user, details]) => {
+                    const [day, month, year] = details.date.split("/").map(Number);
+                    const [hour] = details.heure.split(":").map(Number);
+                    const date = new Date(year, month - 1, day);
+                    parsedData.push({ user, date, day: date.getDay(), hour });
+                });
+            });
+
+            // Initialiser le graphique
+            updateChart(parsedData);
+
+            // Gestion des boutons
+            document.getElementById("prevWeek").addEventListener("click", () => {
+                currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+                updateChart(parsedData);
+            });
+
+            document.getElementById("nextWeek").addEventListener("click", () => {
+                currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+                updateChart(parsedData);
+            });
+        });
+    </script>
+</body>
+</html>
