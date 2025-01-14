@@ -214,3 +214,21 @@ p {
 .radarCircle {
     pointer-events: all; /* Active les événements de la souris pour les cercles */
 }
+
+.legend {
+    cursor: pointer;
+    font-size: 14px;
+    fill: black;
+    display: block;
+    margin-left: 10px;
+    padding-bottom: 5px;
+}
+.legend.active {
+    font-weight: bold;
+    fill: steelblue;
+}
+#legend {
+    top: 75px;
+    left: 750px;
+    font-family: Arial, sans-serif;
+}
