@@ -161,6 +161,16 @@
                 .attr("transform", `translate(${margin.left},0)`)
                 .call(yAxis);
 
+
+            svg.append("text")
+                .attr("class", "y-axis-label")
+                .attr("x", margin.left +100)
+                .attr("y", margin.top - 5)
+                .attr("text-anchor", "middle")
+                .text("🠕 Nombre de vidéos visionnées")
+                .style("font-size", "14px")
+                .style("font-weight", "bold");
+
             svg.append("g")
                 .attr("class", "x-axis axis")
                 .call(xAxis);
