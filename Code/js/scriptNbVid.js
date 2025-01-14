@@ -20,7 +20,7 @@ let points, lignes; // Pour les lignes
 let tooltip, pointLePlusProche; // Pour le tooltip
 
 // Récupère les données du fichier
-d3.json('Data/videoData2020.json').then(data => {
+d3.json('Code/Data/videoData2020.json').then(data => {
 
     // On met les vidéos dans un tableau pour les manipuler plus facilement
     videosTotal = Object.entries(data).map(([url, valeurs]) => ({
