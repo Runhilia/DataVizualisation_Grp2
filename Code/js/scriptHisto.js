@@ -2,7 +2,7 @@
 const utilisateursHisto = ["Angeline", "Loric", "Mathys", "Thomas"];
 const couleursHisto = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
 
-d3.json("Data/videoData2020.json").then(data => {
+d3.json("Code/Data/videoData2020.json").then(data => {
     // Transformer les données
     const parsedData = [];
     Object.values(data).forEach(video => {

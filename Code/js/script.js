@@ -20,7 +20,7 @@
     const utilisateurDefaut = "Angeline";
     const categoriesDefaut = ["Gaming", "Music", "Education", "Entertainment", "Comedy"];
 
-    d3.json("Data/videoData2020.json").then(data => {
+    d3.json("Code/Data/videoData2020.json").then(data => {
       const videos = Object.entries(data).map(([url, valeurs]) => ({
         url,
         ...valeurs,
