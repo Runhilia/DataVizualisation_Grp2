@@ -132,8 +132,7 @@ d3.json('Code/Data/videoData2020.json').then(data => {
                 .delay(0)
                 .duration(300)
                 .style("opacity", 0.8)
-                .style("stroke", d => couleursCorde[d.source.index])
-                .style("stroke-width", 1);
+                .style("stroke-width", 0);
     
             // Cache l'infobulle
             tooltip.style("display", "none");
