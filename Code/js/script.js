@@ -314,7 +314,7 @@
                   .style("opacity", 0)
                   .remove();
               
-                const tooltip = d3.select("#tooltip");
+                const tooltip = d3.select("#tooltip_genre");
               
                 radarWrapperMerged.selectAll(".radarCircle")
                   .on("mouseover", function (event, d) {

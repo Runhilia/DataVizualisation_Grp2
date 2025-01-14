@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <title>Visualisation de données personnelles de la plateforme YouTube</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+    <meta charset="utf-8" />
+    <title>Visualisation de données personnelles de la plateforme YouTube</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
@@ -14,6 +14,7 @@
         <a href="#evolution">Évolution du nombre de vidéos</a>
         <a href="#categories">Visualisation par catégories</a>
         <a href="#cordes">Visualisation des vidéos communes</a>
+        <a href="#infos">Informations</a>
     </nav>
 
     <h1>Visualisation de données personnelles de la plateforme YouTube</h1>
@@ -26,14 +27,12 @@
             Mathys SAMBET (<a href="mailto:mathys.sambet@etu.univ-lyon1.fr">mathys.sambet@etu.univ-lyon1.fr</a>) <br>
             Thomas HUGUENEL (<a href="mailto:thomas.huguenel@etu.univ-lyon1.fr">thomas.huguenel@etu.univ-lyon1.fr</a>)
         </p>
-        
-        <a href="https://lyondataviz.github.io/teaching/lyon1-m2/2024/">Dataviz cours Lyon 1 M2</a>
     </section>
 
     <section id="contextualisation">
         <h2>Contextualisation</h2>
         <h3>Introduction</h3>
-        <p>Nous avons chacun l'habitude de regarder des vidéos de tout type sur la plateforme YouTube depuis des années, mais est-il possible de pouvoir comparer la quantité de vidéos vues au cours du temps et les types. Ces visualisations vont pouvoir nous permettre de comparer nos habitudes de visionnage</p>
+        <p>Nous avons chacun l'habitude de regarder des vidéos de tout type sur la plateforme YouTube depuis des années, mais est-il possible de pouvoir comparer la quantité de vidéos vues au cours du temps et les types. Ces visualisations vont pouvoir nous permettre de comparer nos habitudes de visionnage.</p>
         <h3>Public concerné</h3>
         <p>Notre projet s’adresse en partie à nous-mêmes car nous trouvons intéressant la
             possibilité d’observer à travers une visualisation nos données concernant YouTube. On
@@ -46,7 +45,7 @@
             de télécharger une copie des données stockées sur les services Google. Cela nous a permis
             d’obtenir de nombreuses informations telles que nos abonnements ou tous les
             commentaires postés mais nous avons principalement retenu notre historique de vidéos.<br>
-            La catégorie et la durée des vidéos qui n'était pas présente avec le Google Takeout ont pu être récupérées grâce a selenium</p>
+            La catégorie et la durée des vidéos qui n'étaient pas présentes avec le Google Takeout ont pu être récupérées grâce a Selenium.</p>
     </section>
 
     <section id="evolution">
@@ -61,7 +60,7 @@
     </section>
 
     <section id="sem">
-        <h2>Nombre d'heure regardé par heure sur YouTube en 2020</h2>
+        <h2>Nombre d'heures regardées par heure sur YouTube en 2020</h2>
         <div id="chart"></div>
         <div id="legend"></div>
     </section>
@@ -79,7 +78,7 @@
         </div>
         <div class="genre_chart">
             <div id="visu"></div>
-            <div id="tooltip" class="tooltip"></div>
+            <div id="tooltip_genre" class="tooltip"></div>
             <div id="donuts"></div>
             <div id="info"></div>
         </div>
@@ -87,11 +86,43 @@
 
     <section id="cordes">
                 <h2>Comparaison des vidéos regardées</h2>
-
                 <div id="visuCorde"></div>
+                <div id="tooltip_cordes" class="tooltip"></div>
+            </div>
+        </div>
     </section>
 
-    
+    <section id="infos">
+        <h2>Informations</h2>
+        <p>Ce projet a été réalisé dans le cadre du cours de "Data Visualisation" du Master 2 Informatique - IA de l'Université de Lyon 1.</p>
+        <a href="https://lyondataviz.github.io/teaching/lyon1-m2/2024/">Dataviz cours Lyon 1 M2</a>
+        <p>Nous avons utilisé plusieurs sources pour réaliser ce projet :</p>
+        <ul>
+            <li>Scrapping des données</li>
+            <ul>
+                <li>
+                    <a href="https://drusho.github.io/blog/selenium/web%20scrapping/pandas/youtube/python/2021/07/20/webscrapping-youtube-blog.html">Exemple de code pour le scrapping de YouTube</a>
+                </li>
+                <li>
+                    <a href="https://brightdata.com/blog/how-tos/how-to-scrape-youtube-in-python">Tutoriel pour le scrapping de YouTube</a>
+                </li>
+            </ul>
+            <li>Visualisation des données</li>
+            <ul>
+                <li>
+                    <a href="https://d3-graph-gallery.com/graph/donut_basic.html">Exemple de code pour le donut graph</a>
+                </li>
+                <li>
+                    <a href="https://d3-graph-gallery.com/graph/connectedscatter_legend.html">Exemple de code pour le graph linéaire</a>
+                </li>
+                <li>
+                    <a href="https://observablehq.com/@d3/gallery">Gallerie d'exemple</a>
+                </li>
+            </ul>
+        </ul>
+    </section>
+
+
     <script src="js/script.js"></script>
     <script src="js/scriptCorde.js"></script>
     <script src="js/scriptNbVid.js"></script>

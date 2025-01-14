@@ -56,6 +56,9 @@ d3.json('Data/videoData2020.json').then(data => {
         .sortSubgroups(d3.descending);
     const cordes = corde(matriceVideosCommunes);
 
+    // Création du tooltip
+    const tooltip = d3.select("#tooltip_cordes");
+
     // Création des arcs
     const arcs = d3.arc()
         .innerRadius(rayonInterne)
@@ -97,6 +100,44 @@ d3.json('Data/videoData2020.json').then(data => {
         .append("path")
         .attr("d", liens)
         .style("fill", d => couleursCorde[d.source.index])
-        .style("stroke", d => couleursCorde[d.source.index]);
+        .style("stroke", d => couleursCorde[d.source.index])
+        .style("opacity", 0.8)
+        .on("mouseover", function(event, d) {
+            // Rend transparent les autres liens
+            svg1.selectAll("path")
+                .style("opacity", 0.1);
+
+            // Met en évidence le lien survolé
+            d3.select(this)
+                .style("opacity", 1)
+                .style("stroke", "black")
+                .style("stroke-width", 3);
+
+            // Affiche le tooltip
+            tooltip
+                .style("display", "block")
+                .style("visibility", "visible")
+                .text(`${utilisateursCorde[d.source.index]} et ${utilisateursCorde[d.target.index]} : ${d.source.value} vidéos en commun`); // Affiche le nombre
+        })
+        .on("mousemove", function (event) {
+            // Positionne le tooltip
+            tooltip
+                .style("top", `${event.pageY - 80}px`)
+                .style("left", `${event.pageX - 80}px`);
+        })
+        .on("mouseout", function () {
+            // Réinitialise les liens
+            svg1.selectAll("path")
+                .transition()
+                .delay(0)
+                .duration(300)
+                .style("opacity", 0.8)
+                .style("stroke", d => couleursCorde[d.source.index])
+                .style("stroke-width", 1);
+    
+            // Cache l'infobulle
+            tooltip.style("display", "none");
+        });
+    
 
 });
