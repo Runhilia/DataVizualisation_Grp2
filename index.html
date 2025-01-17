@@ -48,6 +48,9 @@
             La catégorie et la durée des vidéos qui n'étaient pas présentes avec le Google Takeout ont pu être récupérées grâce a Selenium.</p>
     </section>
 
+
+    <div id="legendContainer"></div>
+
     <section id="evolution">
         <h2>Évolution du nombre de vidéos</h2>
                 <select id="affichage" onchange="changeIntervalle()">
@@ -68,10 +71,8 @@
     <section id="categories">
         <h2>Visualisation par catégories</h2>
         <div>
-            <label>Choisissez les utilisateurs et les catégories à afficher : </label>
+            <label>Choisissez les catégories à afficher : </label>
             <div id="control">
-                <div id="user-select">
-                </div>
                 <div id="category-select">
                 </div>
             </div>
@@ -122,6 +123,7 @@
         </ul>
     </section>
     
+    <script src="Code/js/legend.js"></script>
     <script src="Code/js/script.js"></script>
     <script src="Code/js/scriptCorde.js"></script>
     <script src="Code/js/scriptNbVid.js"></script>

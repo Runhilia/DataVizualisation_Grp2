@@ -31,9 +31,25 @@
             font-size: 14px;
             font-weight: bold;
         }
-        .legend {
-            font-size: 14px;
-            cursor: pointer;
+        #legendContainer {
+            position: fixed;
+            top: 10px; /* Ajustez la position verticale */
+            right: 10px; /* Fixez la légende à droite */
+            background-color: whitesmoke;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000; /* Place la légende au-dessus des autres éléments */
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-item rect {
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
         }
         .small-text {
             font-size: 10px;
@@ -47,6 +63,7 @@
         <span id="currentWeek"></span>
         <button id="nextWeek">Semaine suivante</button>
     </div>
+    <div id="legendContainer"></div>
     <div id="chart"></div>
 
     <script>
@@ -55,7 +72,7 @@
         const height = 600;
         const margin = { top: 40, right: 150, bottom: 80, left: 60 };
 
-        const utilisateurs = ["Angeline", "Loric", "Mathys", "Thomas"];
+        const utilisateursVisu = ["Angeline", "Loric", "Mathys", "Thomas"];
         const couleurs = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
 
         // Création de l'élément SVG
@@ -94,7 +111,7 @@
             const endWeek = new Date(currentWeekStart);
             endWeek.setDate(endWeek.getDate() + 6);
 
-            const filteredData = utilisateurs.map(user => {
+            const filteredData = utilisateursVisu.map(user => {
                 const userData = data.filter(d => 
                     d.user === user && 
                     d.date >= currentWeekStart && 
@@ -207,61 +224,7 @@
                     });
             });
 
-            // Création de la légende en haut à droite
-            // code repris à thomas
-            const largeurLegende = 130;
-            const hauteurLegende = utilisateurs.length * 20 + 10;
-            const listeCourbesAffichées = [true, true, true, true];
-
-            const legende = svg.append('g')
-                .attr('class', 'legende')
-                .attr('transform', `translate(${width - margin.right + 10}, ${margin.top})`);
-
-            // Ajout du fond
-            legende.append('rect')
-                .attr('width', largeurLegende)
-                .attr('height', hauteurLegende)
-                .attr('fill', 'whitesmoke') 
-                .attr('stroke', 'black')
-                .attr('rx', 5) // Coins arrondis
-                .attr('ry', 5); // Coins arrondis
-
-            // Ajout des noms
-            legende.selectAll('.legende')
-                .data(utilisateurs)
-                .enter()
-                .append('g')
-                .attr('class', 'legende')
-                .attr('transform', (d, i) => `translate(5, ${i * 20 + 10})`) // Affichage des noms les uns en dessous des autres
-                .each(function(d, i) {
-                    const element = d3.select(this);
-                    // Carré de couleur
-                    element.append('rect')
-                        .attr('width', 10)
-                        .attr('height', 10)
-                        .attr('fill', couleurs[i]);
-                    // Nom de la personne
-                    element.append('text')
-                        .attr('x', 15)
-                        .attr('y', 10)
-                        .text(d);
-                    // Evènement qui se produit lorsqu'on clique sur le nom
-                    element.on('click', () => {
-                        listeCourbesAffichées[i] = !listeCourbesAffichées[i]; // On inverse l'état de la courbe
-                        // On affiche ou cache la courbe
-                        d3.selectAll(`.utilisateur-${i}`)
-                            .transition()
-                            .delay(0)
-                            .duration(300)
-                            .attr('display', listeCourbesAffichées[i] ? 'block' : 'none');
-                        // On affiche ou cache le nom dans la légende
-                        element.selectAll('text')
-                            .transition()
-                            .delay(0)
-                            .duration(300)
-                            .attr('fill', listeCourbesAffichées[i] ? 'black' : 'lightgray');
-                    });
-                });
+            
         }
 
         // Charger les données
@@ -292,5 +255,6 @@
             });
         });
     </script>
+    <script src="Code/js/legend.js"></script>
 </body>
 </html>

@@ -235,3 +235,23 @@ p {
     left: 750px;
     font-family: Arial, sans-serif;
 }
+
+#legendContainer {
+    position: fixed;
+    top: 25%; /* Ajustez la position verticale */
+    right: 10px; /* Fixez la légende à droite */
+    background-color: whitesmoke;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000; /* Place la légende au-dessus des autres éléments */
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+.legend-item rect {
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+}

@@ -201,62 +201,6 @@ d3.json('Code/Data/videoData2020.json').then(data => {
         return semaine;
     }
 
-
-    // Création de la légende en haut à droite
-    const largeurLegende = 130;
-    const hauteurLegende = utilisateursNbVid.length * 20 + 10;
-    const listeCourbesAffichées = [true, true, true, true];
-
-    const legende = svg.append('g')
-        .attr('class', 'legende')
-        .attr('transform', `translate(${largeurNbVid - margeNbVid.droite - 150}, ${margeNbVid.haut})`);
-
-    // Ajout du fond
-    legende.append('rect')
-        .attr('width', largeurLegende)
-        .attr('height', hauteurLegende)
-        .attr('fill', 'whitesmoke') 
-        .attr('stroke', 'black')
-        .attr('rx', 5) // Coins arrondis
-        .attr('ry', 5); // Coins arrondis
-    
-    // Ajout des noms
-    legende.selectAll('.legende')
-        .data(utilisateursNbVid)
-        .enter()
-        .append('g')
-        .attr('class', 'legende')
-        .attr('transform', (d, i) => `translate(5, ${i * 20 + 10})`) // Affichage des noms les uns en dessous des autres
-        .each(function(d, i) {
-            const element = d3.select(this);
-            // Carré de couleur
-            element.append('rect')
-                .attr('width', 10)
-                .attr('height', 10)
-                .attr('fill', couleursNbVid[i]);
-            // Nom de la personne
-            element.append('text')
-                .attr('x', 15)
-                .attr('y', 10)
-                .text(d);
-            // Evènement qui se produit lorsqu'on clique sur le nom
-            element.on('click', () => {
-                listeCourbesAffichées[i] = !listeCourbesAffichées[i]; // On inverse l'état de la courbe
-                // On affiche ou cache la courbe
-                d3.selectAll(`.utilisateur-${i}`)
-                    .transition()
-                    .delay(0)
-                    .duration(300)
-                    .attr('display', listeCourbesAffichées[i] ? 'block' : 'none');
-                // On affiche ou cache le nom dans la légende
-                element.selectAll('text')
-                    .transition()
-                    .delay(0)
-                    .duration(300)
-                    .attr('fill', listeCourbesAffichées[i] ? 'black' : 'lightgray');
-            });
-        });
-
     // Fonction qui se produit lorsqu'on survole une courbe
     function survolCourbe(courbe) {
         // On rend les autres courbes transparentes
