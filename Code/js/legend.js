@@ -1,5 +1,5 @@
-const utilisateurs = ["Angeline", "Loric", "Mathys", "Thomas"];
-const couleursUtilisateurs = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
+const utilisateurs = [ "Loric", "Mathys", "Thomas", "Angeline"];
+const couleursUtilisateurs = ["#0055FF", "#FDD017", "#FF0000","#00CC00"];
 const listeCourbesAffichées = [true, true, true, true];
 
 // Sélection du conteneur de la légende fixe
@@ -39,5 +39,6 @@ utilisateurs.forEach((utilisateur, i) => {
             .style("color", listeCourbesAffichées[i] ? "black" : "lightgray");
 
         updateCharts();
+        updateChartHisto();
     });
 });

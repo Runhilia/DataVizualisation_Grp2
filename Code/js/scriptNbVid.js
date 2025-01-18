@@ -11,13 +11,10 @@ var svg = d3.
 
 const margeNbVid = {haut: 20, droite: 20, bas: 40, gauche: 50};
 
-const utilisateursNbVid = ["Angeline", "Loric", "Mathys", "Thomas"];
-const couleursNbVid = ["#00CC00", "#0055FF", "#FDD017", "#FF0000"];
-
 let videosTotal, videosParJour, videosParSemaine, videosParMois; // Pour les vidéos
 let echelleX, echelleY, axeX, axeY; // Pour les axes
 let points, lignes; // Pour les lignes
-let tooltip, pointLePlusProche; // Pour le tooltip
+let tooltip_nbVid, pointLePlusProche; // Pour le tooltip
 
 // Récupère les données du fichier
 d3.json('Code/Data/videoData2020.json').then(data => {
@@ -26,17 +23,17 @@ d3.json('Code/Data/videoData2020.json').then(data => {
     videosTotal = Object.entries(data).map(([url, valeurs]) => ({
         url,
         ...valeurs,
-        users: Object.entries(valeurs.users).map(([user, details]) => ({ // On fait pareil pour les utilisateursNbVid à l'intérieur des vidéos
+        users: Object.entries(valeurs.users).map(([user, details]) => ({ // On fait pareil pour les utilisateurs à l'intérieur des vidéos
             user,
             ...details
         }))
     }));
 
     // Tri des vidéos par personne
-    const videosParPersonne = utilisateursNbVid.map(utilisateur => {
+    const videosParPersonne = utilisateurs.map(utilisateur => {
         var videosUtilisateur = [];
         videosTotal.forEach(video => { // On parcourt toutes les vidéos
-            video.users.forEach(user => { // On parcourt tous les utilisateursNbVid de chaque vidéo
+            video.users.forEach(user => { // On parcourt tous les utilisateurs de chaque vidéo
                 if (user.user === utilisateur) { // Si l'utilisateur est celui qu'on cherche
                     videosUtilisateur.push({ // On ajoute la vidéo à la liste des vidéos
                         url: video.url,
@@ -138,11 +135,12 @@ d3.json('Code/Data/videoData2020.json').then(data => {
 
     // Création des points pour les lignes
     points = getPointsCourbe(videosParSemaine);
+    
 
     // Création d'un tooltip pour afficher les informations sur les points
-    tooltip = d3.select('#visu')
+    tooltip_nbVid = d3.select('#visuNbVid')
         .append('div')
-        .attr('class', 'tooltip')
+        .attr('class', 'tooltipNbVid')
         .style('position', 'absolute')
         .style('visibility', 'hidden')
         .style('background', 'white')
@@ -167,7 +165,7 @@ d3.json('Code/Data/videoData2020.json').then(data => {
             .datum(d)
             .attr('d', ligneGen)
             .attr('fill', 'none')
-            .attr('stroke', couleursNbVid[i]) // Une couleur par personne
+            .attr('stroke', couleursUtilisateurs[i]) // Une couleur par personne
             .attr('stroke-width', 2)
             .attr('class', `ligne utilisateur-${i}`)
             // Evènement qui se produit lorsqu'on passe la souris sur la courbe
@@ -216,36 +214,35 @@ d3.json('Code/Data/videoData2020.json').then(data => {
             .attr('stroke-opacity', 1);
 
         // On rend le tooltip visible et on affiche les informations
-        tooltip.style('visibility', 'visible'); 
+        tooltip_nbVid.style('visibility', 'visible'); 
         const mouseX = d3.pointer(event)[0];
 
         // Place le tooltip au bon endroit avec les informations
-        tooltip
+        tooltip_nbVid
             .style('top', `${event.pageY - 80}px`)
             .style('left', `${event.pageX - 80}px`)
-            .style('color', couleursNbVid[parseInt(courbe.getAttribute('class').split('-')[1])]);
+            .style('color', couleursUtilisateurs[parseInt(courbe.getAttribute('class').split('-')[1])]);
 
         // Trouve le point le plus proche de la souris et affiche les informations dans le tooltip
         const dateActuelle = echelleX.invert(mouseX);
         const indiceCourbe = courbe.getAttribute('class').split('-')[1];
         pointLePlusProche = trouverPointLePlusProche(dateActuelle, indiceCourbe);
-        //console.log(pointLePlusProche);
         switch (document.getElementById('affichage').value) {
             case 'jour':
-                tooltip.text(`${pointLePlusProche.date.toLocaleDateString()} :\n ${pointLePlusProche.nbVideos} vidéos visionnées`);
+                tooltip_nbVid.text(`${pointLePlusProche.date.toLocaleDateString()} :\n ${pointLePlusProche.nbVideos} vidéos visionnées`);
                 break;
             case 'semaine':
-                tooltip.text(`Semaine du ${pointLePlusProche.date.toLocaleDateString()} :\n ${pointLePlusProche.nbVideos} vidéos visionnées`);
+                tooltip_nbVid.text(`Semaine du ${pointLePlusProche.date.toLocaleDateString()} :\n ${pointLePlusProche.nbVideos} vidéos visionnées`);
                 break;
             case 'mois':
-                tooltip.text(`Mois -  ${pointLePlusProche.date.toLocaleString('fr-FR', { month: 'long', year: 'numeric' })} :\n ${pointLePlusProche.nbVideos} vidéos visionnées`);
+                tooltip_nbVid.text(`Mois -  ${pointLePlusProche.date.toLocaleString('fr-FR', { month: 'long', year: 'numeric' })} :\n ${pointLePlusProche.nbVideos} vidéos visionnées`);
                 break;
         }
     }
 
     // Fonction qui se produit quand on enlève la souris d'une courbe
     function enleverSurvolCourbe() {
-        tooltip.style('visibility', 'hidden'); // On cache le tooltip
+        tooltip_nbVid.style('visibility', 'hidden'); // On cache le tooltip
         d3.selectAll('.ligne')
             .transition()
             .delay(0)
