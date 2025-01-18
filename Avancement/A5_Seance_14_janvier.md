@@ -20,15 +20,15 @@
 - [X] Associer les deux visualisations (Angéline)
 
 
-## Travail supplémentaire
-Après concertation, nous avons décidé de travailler sur une nouvelle visualisation qui permettrait de voir les vidéos en commun que nous avons entre nous. Pour cela, nous avons décidé de réaliser un **diagramme en corde**. Thomas s'est proposé pour le faire étant donné qu'il avait la plus petite charge de travail.
+## Travail supplémentaire effectué
+Après concertation, nous avions décidé de travailler sur une nouvelle visualisation qui permettrait de voir les vidéos en commun que nous avons entre nous. Pour cela, nous avons décidé de réaliser un **graphique en cordes**. Thomas s'est proposé pour le faire étant donné qu'il lui restait la charge de travail la moins importante.
 
-Pour la même raison, Mathys a été désigné pour faire la mise en page de la page web et rendre le tout plus esthétique.
+Pour la même raison, Mathys avait été désigné pour faire la mise en page de la page web et rendre le tout plus esthétique.
 
 ## Problèmes rencontrés
-Lors de la fusion de nos visualisations, nous avons rencontré quelques problèmes, notamment au niveau des tooltips qui ne s'affichaient pas correctement ou plus du tout. Nous n'avons pas réussi à corriger ce problème avant la présentation et sera donc à régler pour la prochaine séance.
+Lors de la fusion de nos visualisations, nous avons rencontré quelques problèmes, notamment au niveau des tooltips qui ne s'affichaient pas correctement voire plus du tout. Nous n'avons pas réussi à corriger ce problème avant la présentation et sera donc à régler pour le rendu final.
 
-## Travail restant suite à la réunion
+## Travail restant avant le rendu final
 ### Urgent
 - [ ] Corriger les problèmes d'affichage des tooltips
 - [ ] Rendre les différentes légendes homogènes pour n'avoir qu'une seule légende pour toutes les visualisations au lieu de plusieurs

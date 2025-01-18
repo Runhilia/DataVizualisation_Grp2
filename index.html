@@ -86,18 +86,22 @@
     </section>
 
     <section id="cordes">
-                <h2>Comparaison des vidéos regardées</h2>
-                <div id="visuCorde"></div>
-                <div id="tooltip_cordes" class="tooltip"></div>
+        <h2>Comparaison des vidéos regardées</h2>
+        <div id="container_cordes" class = "container_cordes">
+            <div id="visu_cordes"></div>
+            <div id="tooltip_cordes" class="tooltip"></div>
+            <div id="info_cordes" class="info_cordes">
+                <button id="fermer" class="bouton_fermer">&times;</button>
+                <div id="info_cordes_texte"></div>
             </div>
         </div>
     </section>
 
     <section id="infos">
         <h2>Informations</h2>
-        <p>Ce projet a été réalisé dans le cadre du cours de "Data Visualisation" du Master 2 Informatique - IA de l'Université de Lyon 1.</p>
-        <a href="https://lyondataviz.github.io/teaching/lyon1-m2/2024/">Dataviz cours Lyon 1 M2</a>
-        <p>Nous avons utilisé plusieurs sources pour réaliser ce projet :</p>
+        Ce projet a été réalisé dans le cadre du cours de "Data Visualisation" du Master 2 Informatique - IA de l'Université de Lyon 1 :
+        <a href="https://lyondataviz.github.io/teaching/lyon1-m2/2024/">Dataviz cours Lyon 1 M2</a> <br> <br>    
+        Nous avons utilisé plusieurs sources pour réaliser ce projet :
         <ul>
             <li>Scrapping des données</li>
             <ul>
@@ -119,12 +123,23 @@
                 <li>
                     <a href="https://observablehq.com/@d3/gallery">Gallerie d'exemple</a>
                 </li>
+                <li>
+                    <a href="https://www.freecodecamp.org/learn/data-visualization/">Tutoriels pour les visualisations</a>
+                </li>
+                <li>
+                    <a href="https://stackoverflow.com">Stackoverflow</a>
+                </li>
+                <li>
+                    Autres sites de tutoriels et d'exemples de code
+                </li>
             </ul>
         </ul>
+        <p>Nous avons également utilisé des outils d'aide tels que <a href="https://chatgpt.com">ChatGPT</a> pour des extraits de code
+            ou encore <a href="https://github.com/features/copilot">Github Copilot</a> pour des suggestions de code.</p>
     </section>
     
     <script src="Code/js/legend.js"></script>
-    <script src="Code/js/script.js"></script>
+    <script src="Code/js/scriptGenre.js"></script>
     <script src="Code/js/scriptCorde.js"></script>
     <script src="Code/js/scriptNbVid.js"></script>
     <script src="Code/js/scriptHisto.js"></script>

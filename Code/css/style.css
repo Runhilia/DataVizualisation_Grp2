@@ -59,6 +59,7 @@ h1 {
 h2 {
     font-size: 28px;
     margin-bottom: 15px;
+    line-height: 1.2;
 }
 
 /* Style des sections */
@@ -213,7 +214,7 @@ p {
 .radarArea {
     pointer-events: none; /* Désactive les événements de la souris pour les zones */
 }
-  
+
 .radarCircle {
     pointer-events: all; /* Active les événements de la souris pour les cercles */
 }
@@ -254,4 +255,76 @@ p {
     width: 10px;
     height: 10px;
     margin-right: 5px;
+}
+
+/* Visu des cordes */
+#container_cordes {
+    display: flex;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+/* Visualisation principale */
+#visu_cordes {
+    flex: 1;
+    transition: margin-right 0.3s ease;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Div latérale */
+#info_cordes {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 500px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%); /* Cachée en dehors de l'écran */
+    transition: transform 0.3s ease-in-out;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000; 
+}
+
+#info_cordes.active {
+    transform: translateX(0)
+}
+
+/* Bouton de fermeture */
+.bouton_fermer {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 36px;
+    cursor: pointer;
+    color: #000000;
+}
+
+#info_cordes_texte {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#info_cordes.active #info_cordes_texte {
+    padding-left: 20px;
+    padding-right: 20px;
+    opacity: 1;
+}
+
+.info_cordes iframe {
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+    border: none;
+}
+
+.info_cordes .video {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
 }
